@@ -14,7 +14,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Cylinder;
+import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
 
@@ -48,7 +50,7 @@ public class Main extends Application {
 
 
         Slider slider1 = new Slider(-100, 100, 0.0);
-        slider1.setShowgitTickMarks( true);
+        slider1.setShowTickMarks( true);
         slider1.setShowTickLabels( true);
         slider1.setPrefWidth( 300.0);
 
@@ -57,7 +59,7 @@ public class Main extends Application {
         slider2.setShowTickLabels( true);
         slider2.setPrefWidth( 300.0);
 
-        Slider slider3 = new Slider(-100, 100, 0.0);
+        Slider slider3 = new Slider(0, 100, 50);
         slider3.setShowTickMarks( true);
         slider3.setShowTickLabels( true);
         slider3.setPrefWidth( 300.0);
@@ -67,7 +69,8 @@ public class Main extends Application {
 
         //Sub Scene goes here
         //"add shape" button here
-        Group shapesGroup = new Group(new Cylinder(5, 20));
+        Cylinder cylinder = new Cylinder(5, 20);
+        Group shapesGroup = new Group(cylinder);
         SubScene shapesSub = new SubScene(shapesGroup, 340, 340,true, SceneAntialiasing.DISABLED);
         shapesSub.setFill(Color.CYAN);
 
@@ -94,20 +97,29 @@ public class Main extends Application {
             pCamera.getTransforms().addAll(new Translate(0, 0, -100));
             pCamera.getTransforms().addAll(new Rotate(-x, Rotate.Y_AXIS));
             pCamera.getTransforms().addAll(new Rotate(-y, Rotate.X_AXIS));
-            pCamera.getTransforms().addAll(new Translate(0, 0, z));
+            //pCamera.getTransforms().addAll(new Translate(0, 0, z));
 
         };
         slider1.valueProperty().addListener(bob);
         slider2.valueProperty().addListener(bob);
         slider3.valueProperty().addListener(bob);
 
-        Cylinder.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Clicked!", ButtonType.FINISH);
-                alert.showAndWait();
-            }
-        });
+
+        int scaleVal = 1;
+        Scale scale = new Scale(scaleVal, 1, 1);
+        Sphere sphere = new Sphere(10);
+        cylinder.getTransforms().add(scale);
+
+
+        slider3.valueProperty().addListener(((observable, oldValue, newValue) -> {
+            // value will be between 0 and 100
+            double size = (slider3.getValue()) / 20;
+            scale.setY(size);
+            scale.setX(size);
+            scale.setZ(size);
+        }));
+
+
     }
 
 
